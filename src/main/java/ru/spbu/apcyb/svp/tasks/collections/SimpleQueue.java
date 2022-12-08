@@ -3,7 +3,6 @@ package ru.spbu.apcyb.svp.tasks.collections;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import org.apache.maven.surefire.shared.lang3.NotImplementedException;
 
 /**
  * Standard queue.
@@ -81,36 +80,36 @@ public class SimpleQueue<T> implements java.util.Queue<T> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Iterator<T> iterator() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Object[] toArray() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 }

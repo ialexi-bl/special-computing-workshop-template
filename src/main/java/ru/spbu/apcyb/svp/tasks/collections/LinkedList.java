@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.maven.surefire.shared.lang3.NotImplementedException;
 
 /**
  * Связный список.
@@ -170,67 +169,67 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator<T> iterator() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Object[] toArray() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <T1> T1[] toArray(@Nonnull T1[] a) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean containsAll(@Nonnull Collection<?> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean addAll(@Nonnull Collection<? extends T> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean addAll(int index, @Nonnull Collection<? extends T> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeAll(@Nonnull Collection<?> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean retainAll(@Nonnull Collection<?> c) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator<T> listIterator() {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
 }
