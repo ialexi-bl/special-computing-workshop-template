@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  */
 public class SimpleQueue<T> implements java.util.Queue<T> {
 
-    LinkedList<T> list;
+    LinkedList<T> list = new LinkedList<>();
 
     @Override
     public int size() {

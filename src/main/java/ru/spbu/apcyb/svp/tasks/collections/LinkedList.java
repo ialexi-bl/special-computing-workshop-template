@@ -46,7 +46,7 @@ public class LinkedList<T> implements List<T> {
     @Override
     public boolean contains(Object o) {
         for (Node current = first; current != null; current = current.next) {
-            if (o.equals(current)) {
+            if (o.equals(current.value)) {
                 return true;
             }
         }
@@ -55,7 +55,7 @@ public class LinkedList<T> implements List<T> {
 
     @Nonnull
     private Node getNodeAt(int index) {
-        if (index <= 0 || index >= size) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(
                 "Index " + index + " out of bounds for length " + size);
         }
@@ -122,7 +122,7 @@ public class LinkedList<T> implements List<T> {
         }
 
         for (Node current = first; current != null; current = current.next) {
-            if (o.equals(current)) {
+            if (o.equals(current.value)) {
                 if (size == 1) {
                     first = last = null;
                 } else if (current.previous == null) {

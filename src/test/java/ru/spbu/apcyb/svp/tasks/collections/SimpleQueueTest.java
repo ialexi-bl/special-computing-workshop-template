@@ -1,10 +1,11 @@
 package ru.spbu.apcyb.svp.tasks.collections;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings({"ResultOfMethodCallIgnored", "SuspiciousMethodCalls"})
 class SimpleQueueTest {
 
     @SuppressWarnings("ConstantConditions")
@@ -33,16 +34,35 @@ class SimpleQueueTest {
 
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
         Assertions.assertEquals(queue.size(), 3, "Wrong queue size");
+        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
+    }
+
+    @Test
+    void offer() {
+        var queue = new SimpleQueue<Integer>();
+
+        queue.offer(123);
+
+        Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
+        Assertions.assertEquals(queue.size(), 1, "Wrong queue size");
+        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
+
+        queue.offer(234);
+        queue.offer(345);
+
+        Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
+        Assertions.assertEquals(queue.size(), 3, "Wrong queue size");
+        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
     }
 
     @Test
     void poll() {
         var queue = getQueueWithRange(2);
 
-        Assertions.assertEquals(queue.poll(), 1, "Wrong queue element");
+        Assertions.assertEquals(queue.poll(), 0, "Wrong queue element");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after polling");
 
-        Assertions.assertEquals(queue.poll(), 0, "Wrong queue element");
+        Assertions.assertEquals(queue.poll(), 1, "Wrong queue element");
         Assertions.assertTrue(queue.isEmpty(), "Queue must be empty after polling its last element");
 
         Assertions.assertNull(queue.poll(), "Peek must return null for empty queue");
@@ -52,24 +72,43 @@ class SimpleQueueTest {
     void peek() {
         var queue = getQueueWithRange(2);
 
-        Assertions.assertEquals(queue.peek(), 1, "Wrong queue element");
-        Assertions.assertEquals(queue.peek(), 1, "Top element must not change after peeking");
+        Assertions.assertEquals(queue.peek(), 0, "Wrong queue element");
+        Assertions.assertEquals(queue.peek(), 0, "Top element must not change after peeking");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after peeking");
 
-        Assertions.assertNull(queue.peek(), "Peek must return null for empty queue");
+        Assertions.assertNull(new SimpleQueue<Integer>().peek(), "Peek must return null for empty queue");
     }
 
     @Test
     void element() {
         var queue = getQueueWithRange(2);
 
-        Assertions.assertEquals(queue.element(), 1, "Wrong queue element");
+        Assertions.assertEquals(queue.element(), 0, "Wrong queue element");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after taking top element");
 
-        Assertions.assertEquals(queue.poll(), 0, "Wrong queue element");
-        Assertions.assertTrue(queue.isEmpty(), "Queue must be empty after polling its last element");
+        Assertions.assertEquals(queue.element(), 0, "Element should not have changed");
+        Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after element()");
 
-        Assertions.assertThrows(NoSuchElementException.class, queue::element, "element() must throw exception for empty queue");
+        Assertions.assertThrows(
+                NoSuchElementException.class,
+                new SimpleQueue<Integer>()::element,
+                "element() must throw exception for empty queue");
+    }
+
+    @Test
+    void removeTop() {
+        var queue = getQueueWithRange(2);
+
+        Assertions.assertEquals(queue.remove(), 0, "Wrong queue element");
+        Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after taking top element");
+
+        Assertions.assertEquals(queue.remove(), 1, "Wrong queue element");
+        Assertions.assertTrue(queue.isEmpty(), "Queue must be empty after removing last element");
+
+        Assertions.assertThrows(
+                NoSuchElementException.class,
+                queue::remove,
+                "remove() must throw exception for empty queue");
     }
 
     @Test
@@ -89,15 +128,15 @@ class SimpleQueueTest {
 
         queue.remove(0);
         Assertions.assertEquals(2, queue.size(), "Size should have decreased");
-        Assertions.assertEquals(2, queue.peek(), "Top element should not have changed");
+        Assertions.assertEquals(1, queue.peek(), "Top element should not have changed");
 
         queue.remove(0);
         Assertions.assertEquals(2, queue.size(), "Size should not have changed");
-        Assertions.assertEquals(2, queue.peek(), "Top element should not have changed");
+        Assertions.assertEquals(1, queue.peek(), "Top element should not have changed");
 
         queue.remove(new LinkedList<Integer>());
         Assertions.assertEquals(2, queue.size(), "Size should not have changed");
-        Assertions.assertEquals(2, queue.peek(), "Top element should not have changed");
+        Assertions.assertEquals(1, queue.peek(), "Top element should not have changed");
 
         queue.remove(2);
         Assertions.assertEquals(1, queue.size(), "Size should have changed");
@@ -124,11 +163,69 @@ class SimpleQueueTest {
     }
 
     private SimpleQueue<Integer> getQueueWithRange(int size) {
-        var list = new SimpleQueue<Integer>();
+        var queue = new SimpleQueue<Integer>();
         for (int i = 0; i < size; i++) {
-            list.add(i);
+            queue.add(i);
         }
-        return list;
+        return queue;
     }
 
+    @Test
+    public void containsAll() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                () -> new SimpleQueue<Integer>().containsAll(new ArrayList<>()),
+                "Not implemented"
+        );
+    }
+
+    @Test
+    public void addAll() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                () -> new SimpleQueue<Integer>().addAll(new ArrayList<>()),
+                "Not implemented"
+        );
+    }
+
+    @Test
+    public void removeAll() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                () -> new SimpleQueue<Integer>().removeAll(new ArrayList<>()),
+                "Not implemented"
+        );
+    }
+
+    @Test
+    public void retainAll() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                () -> new SimpleQueue<Integer>().retainAll(new ArrayList<>()),
+                "Not implemented"
+        );
+    }
+
+    @Test
+    public void iterator() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                new SimpleQueue<Integer>()::iterator,
+                "Not implemented"
+        );
+    }
+
+    @Test
+    public void toArray() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                new SimpleQueue<Integer>()::toArray,
+                "Not implemented"
+        );
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                () -> new SimpleQueue<Integer>().toArray(new Integer[2]),
+                "Not implemented"
+        );
+    }
 }
