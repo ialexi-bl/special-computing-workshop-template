@@ -9,15 +9,6 @@ import ru.spbu.apcyb.svp.tasks.collections.LinkedList;
  * Тесты для задания 2.
  */
 class LinkedListTest {
-
-    private LinkedList<Integer> getListWithRange(int size) {
-        var list = new LinkedList<Integer>();
-        for (int i = 0; i < size; i++) {
-            list.add(i);
-        }
-        return list;
-    }
-
     @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "ResultOfMethodCallIgnored"})
     @Test
     void creatingList() {
@@ -133,7 +124,7 @@ class LinkedListTest {
 
         list.remove((Object) 1);
         list.remove((Object) 2);
-        Assertions.assertFalse(list.isEmpty(),
+        Assertions.assertTrue(list.isEmpty(),
             "List should be empty when all elements are deleted");
 
         list.add(123);
@@ -147,12 +138,20 @@ class LinkedListTest {
         var list = getListWithRange(3);
 
         list.clear();
-        //noinspection ConstantConditions
+        // noinspection ConstantConditions
         Assertions.assertEquals(0, list.size(), "Size should have decreased");
         Assertions.assertTrue(list.isEmpty(), "List should have become empty");
 
         list.add(123);
         Assertions.assertEquals(123, list.get(1),
             "List should not break after removing all elements");
+    }
+
+    private LinkedList<Integer> getListWithRange(int size) {
+        var list = new LinkedList<Integer>();
+        for (int i = 0; i < size; i++) {
+            list.add(i);
+        }
+        return list;
     }
 }
