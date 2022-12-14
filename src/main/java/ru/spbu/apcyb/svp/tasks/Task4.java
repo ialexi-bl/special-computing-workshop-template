@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Задание 4.
@@ -23,21 +25,32 @@ public class Task4 {
     public static void main(String[] args) {
         Configurator.setLevel(logger, Level.INFO);
 
-        if (args.length != 1) {
-            logger.info("Usage: Task3 [path]");
+        if (args.length != 3) {
+            logger.info("Usage: Task3 [path] [path1] [path2]");
             return;
         }
 
         try {
             var values = readValues(args[0]);
             var tans = calculateTangents(values);
-            logger.info(tans);
-
             var tansd = calculateTangentsMultithread(values);
-            logger.info(tansd);
+
+            writeToFile(args[1], tans);
+            writeToFile(args[2], tansd);
         } catch (Exception e) {
             logger.error(e);
         }
+    }
+
+    public static void writeToFile(String path, List<Double> values) throws IOException {
+        Path file = Path.of(path);
+
+        if (Files.exists(file) && !Files.isRegularFile(file)) {
+            throw new IOException("\"" + file + "\" is not a file");
+        }
+
+        String string = values.stream().map(Object::toString).collect(Collectors.joining(" "));
+        Files.write(file, string.getBytes());
     }
 
     public static List<Double> readValues(String path) throws IOException {
