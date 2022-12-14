@@ -1,0 +1,4 @@
+test-dir
+├ file1.txt
+├ subdir
+│ ├ file2.txt

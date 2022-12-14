@@ -1,6 +1,7 @@
 package ru.spbu.apcyb.svp.tasks;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,23 +22,34 @@ public class Task3 {
     public static void main(String[] args) {
         Configurator.setLevel(logger, Level.INFO);
 
-        if (args.length < 1) {
-            logger.info("Usage: Task3 [directory]");
+        if (args.length < 2) {
+            logger.info("Usage: Task3 [directory] [output]");
             return;
         }
 
         try {
             FileTree tree = getFileTree(args[0]);
-            logger.info(tree.toString());
+            writeToFile(args[1], tree.toString());
+            logger.info("Done");
         } catch (IOException e) {
             logger.error(e);
         }
     }
 
+    public static void writeToFile(String path, String value) throws IOException {
+        Path file = Path.of(path);
+
+        if(Files.exists(file) && !Files.isRegularFile(file)) {
+            throw new IOException("\"" + file + "\" is not a file");
+        }
+
+        Files.write(file, value.getBytes());
+    }
+
     /**
      * Рекурсивно строит дерево папок и файлов по переданному пути.
      */
-    public static FileTree getFileTree(String path) throws IOException {
+    public static FileTree getFileTree(String path) throws IOException, UncheckedIOException {
         Path dir = Path.of(path);
 
         if (!Files.isDirectory(dir)) {
@@ -48,26 +60,27 @@ public class Task3 {
     }
 
     private static FileTree traverseDirectory(Path dir) {
-        HashMap<String, FileTree> directories = new HashMap<>();
+        List<FileTree> directories = new ArrayList<>();
         List<String> files = new ArrayList<>();
 
         try (var stream = Files.list(dir)) {
             stream.forEach(path -> {
                 if (Files.isDirectory(path)) {
-                    directories.put(path.getFileName().toString(), traverseDirectory(path));
+                    directories.add(traverseDirectory(path));
                 } else {
                     files.add(path.getFileName().toString());
                 }
             });
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+            throw new UncheckedIOException(e);
         }
 
-        return new FileTree(directories, files);
+        return new FileTree(dir.getFileName().toString(), directories, files);
     }
 
-    private record FileTree(
-        HashMap<String, FileTree> directories,
+    public record FileTree(
+        String dirName,
+        List<FileTree> directories,
         List<String> files
     ) {
 
@@ -78,6 +91,11 @@ public class Task3 {
         private String toString(int indentSize) {
             StringBuilder result = new StringBuilder();
             String indent = "│ ".repeat(indentSize);
+
+            result
+                    .append(dirName)
+                    .append("\n");
+
             for (var file : files) {
                 result
                     .append(indent)
@@ -85,14 +103,14 @@ public class Task3 {
                     .append(file)
                     .append("\n");
             }
-            for (var entry : directories.entrySet()) {
+
+            for (var entry : directories) {
                 result
                     .append(indent)
                     .append("├ ")
-                    .append(entry.getKey())
-                    .append("\n")
-                    .append(entry.getValue().toString(indentSize + 1));
+                    .append(entry.toString(indentSize + 1));
             }
+
             return result.toString();
         }
     }
