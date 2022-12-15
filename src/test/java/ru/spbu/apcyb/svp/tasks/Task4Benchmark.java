@@ -8,6 +8,7 @@ public class Task4Benchmark {
         benchmarkTans(1);
         benchmarkTans(100);
         benchmarkTans(1_000_000);
+        benchmarkTans(10_000_000);
     }
 
     private static void benchmarkTans(int count) {
