@@ -1,32 +1,16 @@
 package ru.spbu.apcyb.svp.tasks.collections;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * Связный список.
  */
 public class LinkedList<T> implements List<T> {
-
-    private class Node {
-
-        T value;
-        @Nullable
-        Node next = null;
-        @Nullable
-        Node previous = null;
-
-        public Node(T value, @Nullable Node previous, @Nullable Node next) {
-            this.value = value;
-            this.previous = previous;
-            this.next = next;
-        }
-
-    }
-
     private int size = 0;
     @Nullable
     private Node first;
@@ -44,9 +28,9 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(@Nullable Object o) {
         for (Node current = first; current != null; current = current.next) {
-            if (o.equals(current.value)) {
+            if (Objects.equals(o, current.value)) {
                 return true;
             }
         }
@@ -57,7 +41,7 @@ public class LinkedList<T> implements List<T> {
     private Node getNodeAt(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(
-                "Index " + index + " out of bounds for length " + size);
+                    "Index " + index + " out of bounds for length " + size);
         }
 
         Node current = first;
@@ -75,18 +59,20 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
+    @Nonnull
     public T get(int index) {
         return getNodeAt(index).value;
     }
 
     @Override
-    public T set(int index, T element) {
+    @Nonnull
+    public T set(int index, @Nonnull T element) {
         getNodeAt(index).value = element;
         return element;
     }
 
     @Override
-    public boolean add(T t) {
+    public boolean add(@Nonnull T t) {
         if (last == null) {
             first = last = new Node(t, null, null);
         } else {
@@ -96,9 +82,8 @@ public class LinkedList<T> implements List<T> {
         return true;
     }
 
-
     @Override
-    public void add(int index, T element) {
+    public void add(int index, @Nonnull T element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
@@ -116,13 +101,13 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(@Nullable Object o) {
         if (first == null || last == null) {
             return false;
         }
 
         for (Node current = first; current != null; current = current.next) {
-            if (o.equals(current.value)) {
+            if (Objects.equals(o, current.value)) {
                 if (size == 1) {
                     first = last = null;
                 } else if (current.previous == null) {
@@ -141,6 +126,7 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
+    @Nonnull
     public T remove(int index) {
         Node node = getNodeAt(index);
 
@@ -165,7 +151,6 @@ public class LinkedList<T> implements List<T> {
         size = 0;
         last = first = null;
     }
-
 
     @Override
     public int indexOf(Object o) {
@@ -230,6 +215,21 @@ public class LinkedList<T> implements List<T> {
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
+    }
+
+    private class Node {
+        @Nonnull
+        T value;
+        @Nullable
+        Node next = null;
+        @Nullable
+        Node previous = null;
+
+        public Node(@Nonnull T value, @Nullable Node previous, @Nullable Node next) {
+            this.value = value;
+            this.previous = previous;
+            this.next = next;
+        }
     }
 
 }

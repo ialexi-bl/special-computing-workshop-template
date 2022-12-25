@@ -1,5 +1,7 @@
 package ru.spbu.apcyb.svp.tasks.collections;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -22,12 +24,12 @@ public class SimpleQueue<T> implements java.util.Queue<T> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(@Nullable Object o) {
         return list.contains(o);
     }
 
     @Override
-    public boolean add(T t) {
+    public boolean add(@Nonnull T t) {
         return list.add(t);
     }
 
@@ -37,6 +39,7 @@ public class SimpleQueue<T> implements java.util.Queue<T> {
     }
 
     @Override
+    @Nonnull
     public T remove() {
         if (list.size() == 0) {
             throw new NoSuchElementException("Queue is empty");
@@ -50,11 +53,12 @@ public class SimpleQueue<T> implements java.util.Queue<T> {
     }
 
     @Override
-    public boolean offer(T t) {
+    public boolean offer(@Nonnull T t) {
         return add(t);
     }
 
     @Override
+    @Nullable
     public T poll() {
         if (list.size() == 0) {
             return null;
@@ -63,6 +67,7 @@ public class SimpleQueue<T> implements java.util.Queue<T> {
     }
 
     @Override
+    @Nullable
     public T peek() {
         if (list.size() == 0) {
             return null;
@@ -71,6 +76,7 @@ public class SimpleQueue<T> implements java.util.Queue<T> {
     }
 
     @Override
+    @Nonnull
     public T element() {
         if (list.size() == 0) {
             throw new NoSuchElementException("Queue is empty");
