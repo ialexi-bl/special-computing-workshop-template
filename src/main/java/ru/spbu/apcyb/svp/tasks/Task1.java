@@ -1,14 +1,12 @@
 package ru.spbu.apcyb.svp.tasks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
-import java.util.function.Consumer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Задание 1.
@@ -21,7 +19,12 @@ public class Task1 {
      * Запуск приложения.
      */
     public static void main(String[] args) {
+        Configurator.setLevel(logger, Level.INFO);
         var scanner = new Scanner(System.in);
+
+        if (!scanner.hasNextLong()) {
+            throw new IllegalArgumentException("Input amount");
+        }
 
         var amount = scanner.nextLong();
 
@@ -30,16 +33,26 @@ public class Task1 {
             notesString = scanner.nextLine().trim();
         }
 
-        var notes = Arrays.stream(notesString.split(" "))
-            .map(Long::parseLong)
-            .toList();
-
+        var notes = parseNotes(notesString);
         printCombinations(amount, notes);
     }
 
+    public static List<Long> parseNotes(String line) {
+        var notes = new HashSet<Long>();
+        for (String note : line.split(" ")) {
+            try {
+                notes.add(Long.parseLong(note));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid note \"" + note + "\".");
+            }
+        }
+
+        return notes.stream().toList();
+    }
+
     public static void printCombinations(
-        long amount,
-        final List<Long> notes
+            long amount,
+            final List<Long> notes
     ) {
         Task1.findCombinations(amount, notes, combination -> logger.log(Level.INFO, combination));
     }
@@ -66,9 +79,9 @@ public class Task1 {
     }
 
     private static void findCombinations(
-        long amount,
-        final List<Long> notes,
-        final Consumer<ArrayList<NotesPack>> onCombination
+            long amount,
+            final List<Long> notes,
+            final Consumer<ArrayList<NotesPack>> onCombination
     ) {
         if (notes.isEmpty()) {
             throw new IllegalArgumentException("At least one note value must be provided");
@@ -78,6 +91,12 @@ public class Task1 {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
 
+        for (long note : notes) {
+            if (note <= 0) {
+                throw new IllegalArgumentException("All notes must be greater than zero");
+            }
+        }
+
         var sortedNotes = new ArrayList<>(notes);
         sortedNotes.sort(Comparator.reverseOrder());
 
@@ -85,11 +104,11 @@ public class Task1 {
     }
 
     private static void findCombinations(
-        long amount,
-        final List<Long> sortedNotes,
-        final Consumer<ArrayList<NotesPack>> onCombination,
-        int currentIndex,
-        ArrayList<NotesPack> currentSequence
+            long amount,
+            final List<Long> sortedNotes,
+            final Consumer<ArrayList<NotesPack>> onCombination,
+            int currentIndex,
+            ArrayList<NotesPack> currentSequence
     ) {
         if (amount == 0) {
             onCombination.accept(new ArrayList<>(currentSequence));
@@ -107,7 +126,7 @@ public class Task1 {
             do {
                 currentSequence.add(pack);
                 findCombinations(amount - note * pack.count, sortedNotes, onCombination, i + 1,
-                    currentSequence);
+                        currentSequence);
                 currentSequence.remove(currentSequence.size() - 1);
                 pack = new NotesPack(pack.value, pack.count - 1);
             } while (pack.count > 0);
