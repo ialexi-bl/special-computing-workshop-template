@@ -1,9 +1,10 @@
 package ru.spbu.apcyb.svp.tasks.collections;
 
-import java.util.*;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "SuspiciousMethodCalls"})
 class SimpleQueueTest {
@@ -26,15 +27,21 @@ class SimpleQueueTest {
         queue.add(123);
 
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
-        Assertions.assertEquals(queue.size(), 1, "Wrong queue size");
-        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
+        Assertions.assertEquals(1, queue.size(), "Wrong queue size");
+        Assertions.assertEquals(123, queue.peek(), "Wrong queue element");
+    }
 
+    @Test
+    void addMultiple() {
+        var queue = new SimpleQueue<Integer>();
+
+        queue.add(123);
         queue.add(234);
         queue.add(345);
 
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
-        Assertions.assertEquals(queue.size(), 3, "Wrong queue size");
-        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
+        Assertions.assertEquals(3, queue.size(), "Wrong queue size");
+        Assertions.assertEquals(123, queue.peek(), "Wrong queue element");
     }
 
     @Test
@@ -44,25 +51,31 @@ class SimpleQueueTest {
         queue.offer(123);
 
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
-        Assertions.assertEquals(queue.size(), 1, "Wrong queue size");
-        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
+        Assertions.assertEquals(1, queue.size(), "Wrong queue size");
+        Assertions.assertEquals(123, queue.peek(), "Wrong queue element");
+    }
 
+    @Test
+    void offerMultiple() {
+        var queue = new SimpleQueue<Integer>();
+
+        queue.offer(123);
         queue.offer(234);
         queue.offer(345);
 
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after adding elements");
-        Assertions.assertEquals(queue.size(), 3, "Wrong queue size");
-        Assertions.assertEquals(queue.peek(), 123, "Wrong queue element");
+        Assertions.assertEquals(3, queue.size(), "Wrong queue size");
+        Assertions.assertEquals(123, queue.peek(), "Wrong queue element");
     }
 
     @Test
     void poll() {
         var queue = getQueueWithRange(2);
 
-        Assertions.assertEquals(queue.poll(), 0, "Wrong queue element");
+        Assertions.assertEquals(0, queue.poll(), "Wrong queue element");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after polling");
 
-        Assertions.assertEquals(queue.poll(), 1, "Wrong queue element");
+        Assertions.assertEquals(1, queue.poll(), "Wrong queue element");
         Assertions.assertTrue(queue.isEmpty(), "Queue must be empty after polling its last element");
 
         Assertions.assertNull(queue.poll(), "Peek must return null for empty queue");
@@ -72,10 +85,13 @@ class SimpleQueueTest {
     void peek() {
         var queue = getQueueWithRange(2);
 
-        Assertions.assertEquals(queue.peek(), 0, "Wrong queue element");
-        Assertions.assertEquals(queue.peek(), 0, "Top element must not change after peeking");
+        Assertions.assertEquals(0, queue.peek(), "Wrong queue element");
+        Assertions.assertEquals(0, queue.peek(), "Top element must not change after peeking");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after peeking");
+    }
 
+    @Test
+    void peekEmpty() {
         Assertions.assertNull(new SimpleQueue<Integer>().peek(), "Peek must return null for empty queue");
     }
 
@@ -83,12 +99,15 @@ class SimpleQueueTest {
     void element() {
         var queue = getQueueWithRange(2);
 
-        Assertions.assertEquals(queue.element(), 0, "Wrong queue element");
+        Assertions.assertEquals(0, queue.element(), "Wrong queue element");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after taking top element");
 
-        Assertions.assertEquals(queue.element(), 0, "Element should not have changed");
+        Assertions.assertEquals(0, queue.element(), "Element should not have changed");
         Assertions.assertFalse(queue.isEmpty(), "Queue must not be empty after element()");
+    }
 
+    @Test
+    void elementEmpty() {
         Assertions.assertThrows(
                 NoSuchElementException.class,
                 new SimpleQueue<Integer>()::element,
@@ -104,12 +123,16 @@ class SimpleQueueTest {
 
         Assertions.assertEquals(queue.remove(), 1, "Wrong queue element");
         Assertions.assertTrue(queue.isEmpty(), "Queue must be empty after removing last element");
+    }
 
+    @Test
+    void removeEmpty() {
         Assertions.assertThrows(
                 NoSuchElementException.class,
-                queue::remove,
+                new SimpleQueue<Integer>()::remove,
                 "remove() must throw exception for empty queue");
     }
+
 
     @Test
     void contains() {
@@ -117,11 +140,17 @@ class SimpleQueueTest {
 
         Assertions.assertTrue(queue.contains(0), "Queue contains this element");
         Assertions.assertTrue(queue.contains(2), "Queue contains this element");
+    }
+
+    @Test
+    void containsInvalid() {
+        var queue = getQueueWithRange(3);
+
         Assertions.assertFalse(queue.contains(3), "Queue doesn't contain this element");
+        Assertions.assertFalse(queue.contains(null), "Queue doesn't contain this element");
         Assertions.assertFalse(queue.contains(new SimpleQueue<Integer>()), "Queue doesn't contain this element");
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
     @Test
     void removeObject() {
         var queue = getQueueWithRange(3);
@@ -133,20 +162,27 @@ class SimpleQueueTest {
         queue.remove(0);
         Assertions.assertEquals(2, queue.size(), "Size should not have changed");
         Assertions.assertEquals(1, queue.peek(), "Top element should not have changed");
+    }
+
+    @Test
+    void removeObjectMultiple() {
+        var queue = getQueueWithRange(3);
+
+        queue.remove(0);
+        queue.remove(2);
+        queue.remove(1);
+
+        Assertions.assertTrue(queue.isEmpty(), "List should be empty when all elements are deleted");
+    }
+
+    @SuppressWarnings("SuspiciousMethodCalls")
+    @Test
+    void removeObjectInvalid() {
+        var queue = getQueueWithRange(3);
 
         queue.remove(new LinkedList<Integer>());
-        Assertions.assertEquals(2, queue.size(), "Size should not have changed");
-        Assertions.assertEquals(1, queue.peek(), "Top element should not have changed");
-
-        queue.remove(2);
-        Assertions.assertEquals(1, queue.size(), "Size should have changed");
-        Assertions.assertEquals(1, queue.peek(), "Top element should have changed");
-
-        queue.remove(1);
-        Assertions.assertTrue(queue.isEmpty(), "List should be empty when all elements are deleted");
-
-        queue.add(123);
-        Assertions.assertEquals(123, queue.peek(), "Queue should not break after removing all elements");
+        Assertions.assertEquals(3, queue.size(), "Size should not have changed");
+        Assertions.assertEquals(0, queue.peek(), "Top element should not have changed");
     }
 
     @Test
